@@ -83,9 +83,9 @@
 		canvasElement.onmouseup = stopShooting;
 		canvasElement.onmousemove = updateShootingPos;
 		canvasElement.addEventListener('touchstart', startShooting, false);
-		canvasElement.addEventListener('touchmove', stopShooting, false);
-		canvasElement.addEventListener('touchcancel', updateShootingPos, false);
-		canvasElement.addEventListener('touchend', updateShootingPos, false);
+		canvasElement.addEventListener('touchmove', updateShootingPos, false);
+		canvasElement.addEventListener('touchcancel', stopShooting, false);
+		canvasElement.addEventListener('touchend', stopShooting, false);
 		canvasElement.width = CANVAS_WIDTH;
 		canvasElement.height = CANVAS_HEIGHT;
 		
