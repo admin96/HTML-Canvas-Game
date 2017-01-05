@@ -57,24 +57,35 @@
 		var CANVAS_HEIGHT = window.innerHeight;
 		
 		var canvasElement = document.createElement("canvas");
-		canvasElement.onmousedown = function(){
+		
+		function startShooting(){
 			if (player.active)
 			{
 				shooting = true;
 			}
-		};
-		canvasElement.onmouseup = function(){
+		}
+		
+		function stopShooting(){
 			if (player.active)
 			{
 				shooting = false;
 			}
-		};
-		canvasElement.onmousemove = function(){
+		}
+		
+		function updateShootingPos(){
 			if (player.active)
 			{
 				player.x = event.clientX;
 			}
-		};
+		}
+		
+		canvasElement.onmousedown = startShooting;
+		canvasElement.onmouseup = stopShooting;
+		canvasElement.onmousemove = updateShootingPos;
+		canvasElement.addEventListener('touchstart', startShooting, false);
+		canvasElement.addEventListener('touchmove', stopShooting, false);
+		canvasElement.addEventListener('touchcancel', updateShootingPos, false);
+		canvasElement.addEventListener('touchend', updateShootingPos, false);
 		canvasElement.width = CANVAS_WIDTH;
 		canvasElement.height = CANVAS_HEIGHT;
 		
@@ -237,13 +248,21 @@
 		  canvas.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 		  if (player.active)
 		  {
-			playerBullets.forEach(function(bullet) {
-				bullet.draw();
-			  });
-			  player.draw();
-			  enemies.forEach(function(enemy) {
-				enemy.draw();
-			  });
+			playerBullets.forEach(
+				function(bullet) {
+					bullet.draw();
+				}
+			);
+			player.draw();
+			enemies.forEach(
+				function(enemy) {
+					enemy.draw();
+					if (enemy.y >= CANVAS_HEIGHT)
+					{
+						player.active = false;
+					}
+				}
+			);
 			if (shooting)
 			{
 				player.shoot();
@@ -255,6 +274,8 @@
 		  }
 		  else
 		  {
+			playerBullets.forEach(function(bullet){bullet.active = false;});
+			enemies.forEach(function(enemy){enemy.active = false;});
 			canvas.fillStyle = "red";
 			canvas.font="500% Arial"; 
 			canvas.textAlign = "center";
@@ -281,6 +302,8 @@
 				div.appendChild(resetButton);
 			}
 		  }
+		  playerBullets.filter(function(bullet){return bullet.active;});
+		  enemies.filter(function(enemy){return enemy.active});
 		}
 		
 		function keyPressed(event){
